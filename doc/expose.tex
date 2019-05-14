@@ -1,0 +1,93 @@
+\documentclass[article,accentcolor=tud8d,bibliography=totoc]{tudreport}
+\usepackage[stable]{footmisc}
+\usepackage{hyperref}
+
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\hypersetup{%
+  pdftitle={Transformer Implementation for Multilingual Machine Translation},
+  pdfauthor={Gregor Geigle},
+  pdfsubject={Exposé for DeepML Project},
+  pdfview=FitH,
+  pdfstartview=FitV
+}
+
+\setcounter{seclinedepth}{1}
+
+%%% Zum Tester der Marginalien %%%
+  \newif\ifTUDmargin\TUDmarginfalse
+  %%% Wird der Folgende Zeile einkommentiert,
+  %%% werden Marginalien gesetzt.
+  % \TUDmargintrue
+  \ifTUDmargin\makeatletter
+    \TUD@setmarginpar{2}
+  \makeatother\fi
+%%% ENDE: Zum Tester der Marginalien %%%
+
+\newlength{\longtablewidth}
+\setlength{\longtablewidth}{0.7\linewidth}
+\addtolength{\longtablewidth}{-\marginparsep}
+\addtolength{\longtablewidth}{-\marginparwidth}
+
+\usepackage[
+backend=biber, % biber ist das Standard-Backend für Biblatex. Für die Abwärtskompatibilität kann hier auch bibtex oder bibtex8 gewählt werden (siehe biblatex-Dokumentation)
+style=numeric, %numeric, authortitle, alphabetic etc.
+sorting=nty, % Sortierung: nty = name title year, nyt = name year title u.a.
+sortcase=false,
+url=false,
+hyperref=auto,
+]{biblatex}
+\addbibresource{References.bib}
+% \settitlepicture{tudreport-pic}
+% \printpicturesize
+
+\title{Multilingual Machine Translation with the Transformer Model}
+\subtitle{Gregor Geigle, Hadsy Cardenas and others [TBD]}
+%\setinstitutionlogo[width]{TUD_sublogo}
+\begin{document}
+\maketitle
+\begin{abstract}
+In this project, we plan to implement a Transformer model and train it for multilingual machine translation supporting two to five languages.
+Multilingual models have shown good results compared to bilingual models and they are possibly an efficient solution to supporting many different languages. 
+The recently proposed Transformer architecture seems to perform better than the previous RNN-based architectures for machine translation and other language tasks.
+\end{abstract}  
+
+\tableofcontents
+
+\section{Multilingual Machine Translation}
+Translating text from one language is an important task in our modern global world.
+This is especially pronounced here in the European Union. 
+There are 24 official languages\footnote{\url{https://europa.eu/european-union/about-eu/eu-languages_en}} and, for example, Parliament speeches need to be translated in each language.
+Neural Machine Translation (NMT) has shown great promise performing the task automatically with better results than previous Machine Translation approaches \autocite{DBLP:journals/corr/WuSCLNMKCGMKSJL16}.\\
+These neural systems are usually trained bilingually for one language pair.
+Supporting many languages requires thus one system for each language pair.
+Recently, however, models have been proposed for universal many-to-many systems which can translate directly from any language to another \autocite{DBLP:journals/corr/HaNW16,johnson2017google}.\\
+These multilingual models reduce the number of required systems and they only need one set of parameters which can simplify the development. 
+They also can improve the translation quality of low-resource languages and might even enable zero-shot translation, that is translation from languages not seen during training \autocite{DBLP:journals/corr/abs-1903-00089}.\\
+Large scale studies suggest that these multilingual systems might be able to outperform bilingual systems \autocite{DBLP:journals/corr/abs-1806-06957,DBLP:journals/corr/abs-1903-00089}.
+
+\section{The Transformer}
+Recurrent Neural Networks (RNN) have been the go-to architecture for NMT as they work well for sequential data like sentences.
+They are usually combined with Attention mechanisms to better model the dependencies between the sentence parts.
+However, RNNs are hard to parallelize and struggle with long sequences \autocite{DBLP:journals/corr/WuSCLNMKCGMKSJL16}.\\
+In 2017, \textcite{DBLP:journals/corr/VaswaniSPUJGKP17} have presented the Transformer model which removes the recurrent units and uses only Attention.\\
+They show that the Transformer can outperform previous RNN-based architectures and achieve state-of-the-art performance for bilingual machine translation \autocite{DBLP:journals/corr/VaswaniSPUJGKP17}.
+The study by \textcite{DBLP:journals/corr/abs-1806-06957} suggests that the Transformer performs better than RNNs in the multilingual setting, as well.
+Transformer also are successful in other language tasks like semantic analysis or question answering \autocite{DBLP:journals/corr/abs-1810-04805}.\\
+The architecture of the Transformer for translation is an encoder-decoder model, similar to previous RNN-based architectures.
+The difference to the recurrent models is, that it replaces these units with multiple stacked blocks of each one Self-Attention and one fully connected layer in the encoder and an additional encoder-decoder Attention layer for each block in the decoder half of the network.\\
+Self-Attention is a new layer proposed by \textcite{DBLP:journals/corr/VaswaniSPUJGKP17} which calculates a feature vector for each input part based on its dependency to other parts.
+Since the entire input is processed at once, a positional encoding is added at the beginning to enable the network to model the sequential nature of the sentence.
+\section{Project Proposal}
+For the project, we plan to implement a Transformer model with TensorFlow and Keras based on the model proposed by \textcite{DBLP:journals/corr/VaswaniSPUJGKP17} and extend it for multilingual support as described by \textcite{DBLP:journals/corr/HaNW16,johnson2017google}.\\
+A possible dataset for our project is the TED corpus, which is a parallel corpus based on transcribed TED talks. 
+The dataset was compiled by \textcite{Ye2018WordEmbeddings} and contains a wide range of languages.
+\textcite{DBLP:journals/corr/abs-1903-00089} use this corpus for their experiments and publishes BLEU scores \autocite{papineni2002bleu} for some language pairs which enables us to compare our model against theirs.\\
+We are aware of our computational limitations and plan to begin experiments simply with German - English and then extend to three or five languages based on the performance and training time with fever languages.
+If our Transformer is able to handle multiple languages, then we can also experiment with zero-shot translations for a language similar to our trained ones.
+
+\printbibliography[title=References, heading=bibliography]
+   
+\end{document}
